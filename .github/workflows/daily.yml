@@ -58,7 +58,7 @@ jobs:
         run: |
           git config user.name "paper-digest-bot"
           git config user.email "bot@paper-digest.local"
-          git add sent_papers.json journals_if.json logs/
+          git add sent_papers.json journals_if.json
           git diff --cached --quiet || (
             git commit -m "📝 Update sent papers & journal cache [$(date +%Y-%m-%d)]"
             git push
