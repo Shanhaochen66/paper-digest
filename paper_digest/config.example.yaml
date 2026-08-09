@@ -34,6 +34,12 @@ keywords:
   - "machine learning"
   - "hyperspectral"
 
+# --- LLM 亮点提炼 (DeepSeek) ---
+# 注册获取 API Key: https://platform.deepseek.com
+deepseek:
+  api_key: "sk-YOUR_DEEPSEEK_API_KEY"
+  model: "deepseek-chat"
+
 # --- 数据源 ---
 sources:
   semantic_scholar: true                # Semantic Scholar API（主力）

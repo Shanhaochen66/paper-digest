@@ -34,6 +34,7 @@ from typing import Optional
 
 import requests
 import yaml
+from openai import OpenAI
 
 # ============================================================
 # 路径常量
@@ -392,9 +393,35 @@ def _apply_title_templates(text: str) -> str:
 # ============================================================
 # 亮点提取
 # ============================================================
-def extract_highlights(abstract: str, title: str = "", max_highlights: int = 3) -> list[str]:
+def _llm_extract_highlights(abstract: str, title: str, api_key: str,
+                             model: str = "deepseek-chat", timeout: int = 30) -> list[str]:
+    """使用 DeepSeek LLM 提取论文亮点，失败抛出异常"""
+    client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+
+    prompt = f"""Title: {title}
+Abstract: {abstract}
+
+Extract 2-3 key highlights from this paper. Each highlight should be one sentence (20-80 words) describing a core finding or innovation. Return as JSON."""
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": 'You are an expert in agricultural remote sensing and crop science. Extract key findings from paper abstracts. Output ONLY valid JSON: {"highlights": ["highlight1", "highlight2", "highlight3"]}. Each highlight must be a concise, self-contained sentence.'},
+            {"role": "user", "content": prompt}
+        ],
+        response_format={"type": "json_object"},
+        temperature=0.3,
+        max_tokens=500,
+        timeout=timeout,
+    )
+
+    result = json.loads(response.choices[0].message.content)
+    return result.get("highlights", [])
+
+
+def _rule_based_highlights(abstract: str, title: str = "", max_highlights: int = 3) -> list[str]:
     """
-    从摘要中提取 2-3 句核心亮点。
+    规则算法：从摘要中提取 2-3 句核心亮点（LLM 不可用时的降级方案）。
     评分依据: 关键词密度 + 位置权重 + 句子独立性
     """
     if not abstract:
@@ -450,6 +477,26 @@ def extract_highlights(abstract: str, title: str = "", max_highlights: int = 3) 
     highlights.sort(key=lambda s: original_order.get(s, 999))
 
     return highlights
+
+
+def extract_highlights(abstract: str, title: str = "", max_highlights: int = 3,
+                       llm_api_key: str = None, llm_model: str = "deepseek-chat") -> list[str]:
+    """从摘要中提取核心亮点。优先使用 LLM，失败则降级到规则算法。"""
+    if not abstract:
+        return []
+
+    # 尝试 LLM 提取
+    if llm_api_key:
+        try:
+            highlights = _llm_extract_highlights(abstract, title, llm_api_key, llm_model)
+            if highlights:
+                logger.info(f"  LLM 亮点提取成功: {len(highlights)} 条")
+                return highlights[:max_highlights]
+        except Exception as e:
+            logger.warning(f"  LLM 亮点提取失败，降级到规则算法: {e}")
+
+    # 降级：原有规则算法
+    return _rule_based_highlights(abstract, title, max_highlights)
 
 
 # ============================================================
@@ -738,16 +785,27 @@ def filter_by_if(papers: list[Paper], threshold: float = 5.0) -> list[Paper]:
     return result
 
 
-def enrich_papers(papers: list[Paper]) -> list[Paper]:
+def enrich_papers(papers: list[Paper], ds_cfg: dict = None) -> list[Paper]:
     """
     为每篇论文补充: 中文标题翻译 + 亮点提取 + 亮点翻译
+    ds_cfg: DeepSeek 配置 {"api_key": "...", "model": "deepseek-chat"}
     """
+    ds_cfg = ds_cfg or {}
+    llm_api_key = ds_cfg.get("api_key", "")
+    llm_model = ds_cfg.get("model", "deepseek-chat")
+
     logger.info(f"翻译与亮点提取: {len(papers)} 篇...")
+    llm_enabled = bool(llm_api_key)
+    logger.info(f"  LLM 亮点提取: {'已启用 (DeepSeek)' if llm_enabled else '已禁用，使用规则算法'}")
+
     for i, p in enumerate(papers):
         # 翻译标题
         p["title_zh"] = translate_text(p["title"])
-        # 提取英文亮点
-        p["highlights_en"] = extract_highlights(p["abstract"], p["title"])
+        # 提取英文亮点（LLM 优先，失败降级）
+        p["highlights_en"] = extract_highlights(
+            p["abstract"], p["title"],
+            llm_api_key=llm_api_key, llm_model=llm_model
+        )
         # 翻译亮点
         p["highlights_zh"] = [translate_text(h) for h in p["highlights_en"]]
 
@@ -972,7 +1030,7 @@ def main():
     # ---- 翻译 + 亮点 ----
     if not args.no_translate:
         logger.info("[4/6] 翻译与亮点提取...")
-        high_if_papers = enrich_papers(high_if_papers)
+        high_if_papers = enrich_papers(high_if_papers, config.get("deepseek"))
     else:
         logger.info("[4/6] 跳过翻译 (--no-translate)")
 

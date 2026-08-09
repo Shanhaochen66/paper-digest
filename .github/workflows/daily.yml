@@ -45,6 +45,7 @@ jobs:
           cfg['email']['sender'] = '${{ secrets.EMAIL_SENDER }}'
           cfg['email']['password'] = '${{ secrets.EMAIL_PASSWORD }}'
           cfg['email']['recipients'] = '${{ secrets.EMAIL_RECIPIENTS }}'.split(',')
+          cfg['deepseek'] = {'api_key': '${{ secrets.DEEPSEEK_API_KEY }}', 'model': 'deepseek-chat'}
           with open('config.yaml', 'w') as f:
               yaml.dump(cfg, f, allow_unicode=True)
           print('config.yaml 已生成')
