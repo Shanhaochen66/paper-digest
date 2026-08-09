@@ -19,5 +19,4 @@ logs/
 Thumbs.db
 
 # Sensitive config (contains email passwords)
-# Uncomment if pushing to public repo:
-# config.yaml
+config.yaml

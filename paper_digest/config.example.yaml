@@ -1,0 +1,38 @@
+# ============================================================
+# 农业遥感论文每日推送 - 配置文件模板
+# ============================================================
+# 使用方法: 复制此文件为 config.yaml 并填入真实信息
+
+# --- 邮箱设置 ---
+email:
+  # QQ邮箱 SMTP
+  smtp_server: "smtp.qq.com"
+  smtp_port: 587
+  sender: "your_email@qq.com"           # 发件邮箱
+  password: "YOUR_AUTH_CODE_HERE"       # QQ邮箱授权码（非登录密码）
+  recipient: "your_email@qq.com"        # 收件邮箱（可与发件相同）
+
+  # Gmail 用户请改为:
+  # smtp_server: "smtp.gmail.com"
+  # smtp_port: 587
+  # password: "your_app_password"       # Gmail App Password
+
+# --- 论文过滤 ---
+filter:
+  if_threshold: 5.5                     # 影响因子阈值
+  days_back: 180                        # 检索最近 N 天的论文
+  max_papers_per_email: 10              # 每封邮件最多包含论文数
+
+# --- 检索关键词（农业遥感方向）---
+# 每组关键词用空格分隔，语义学搜素引擎会做模糊匹配
+keywords:
+  - "remote sensing"
+  - "agriculture"
+  - "deep learning"
+  - "machine learning"
+  - "hyperspectral"
+
+# --- 数据源 ---
+sources:
+  semantic_scholar: true                # Semantic Scholar API（主力）
+  crossref: false                       # Crossref API（补充，默认关闭）
