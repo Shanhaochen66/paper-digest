@@ -659,6 +659,8 @@ class PaperFetcher:
         "sugarcane", "potato", "grassland", "pasture", "orchard",
         "food", "fertilizer", "tillage", "cover crop",
     ]
+    # 合并关键词，匹配≥2个即通过
+    ALL_TERMS = RS_TERMS + AGRI_TERMS
 
     def __init__(self, days_back: int = 7):
         self.days_back = days_back
@@ -732,6 +734,7 @@ class PaperFetcher:
 
     # ==================================================================
     def _is_agri_rs(self, title: str, abstract: str) -> bool:
+        """匹配任意 2 个及以上关键词即视为农业遥感相关论文"""
         text = f"{title} {abstract}".lower()
 
         def term_matches(term: str) -> bool:
@@ -739,9 +742,8 @@ class PaperFetcher:
                 return term in text
             return bool(re.search(r"\b" + re.escape(term) + r"\b", text))
 
-        has_rs = any(term_matches(t) for t in self.RS_TERMS)
-        has_agri = any(term_matches(t) for t in self.AGRI_TERMS)
-        return has_rs and has_agri
+        match_count = sum(1 for t in self.ALL_TERMS if term_matches(t))
+        return match_count >= 2
 
     # ==================================================================
     def _parse_crossref(self, item: dict) -> Optional[Paper]:
