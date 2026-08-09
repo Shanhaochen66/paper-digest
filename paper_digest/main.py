@@ -881,10 +881,19 @@ def build_html_email(papers: list[Paper], date_str: str, threshold: float) -> st
 
 def send_email(config: dict, html_content: str, paper_count: int, date_str: str) -> bool:
     email_cfg = config["email"]
+    # 支持多收件人（recipients 列表），兼容旧配置（recipient 字符串）
+    if "recipients" in email_cfg:
+        recipients = email_cfg["recipients"]
+    elif "recipient" in email_cfg:
+        recipients = [email_cfg["recipient"]]
+    else:
+        logger.error("配置中缺少收件人信息")
+        return False
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"🌾 农业遥感论文日报 - {date_str} ({paper_count}篇 · 中英双语)"
     msg["From"] = email_cfg["sender"]
-    msg["To"] = email_cfg["recipient"]
+    msg["To"] = ", ".join(recipients)
     msg.attach(MIMEText(
         f"农业遥感论文日报 - {date_str}\n共 {paper_count} 篇论文 (IF≥5.0)\n中英双语 · 含亮点提炼\n\n请使用支持 HTML 的邮件客户端查看。",
         "plain", "utf-8"))
@@ -896,9 +905,9 @@ def send_email(config: dict, html_content: str, paper_count: int, date_str: str)
         server.starttls()
         server.ehlo()
         server.login(email_cfg["sender"], email_cfg["password"])
-        server.sendmail(email_cfg["sender"], email_cfg["recipient"], msg.as_string())
+        server.sendmail(email_cfg["sender"], recipients, msg.as_string())
         server.quit()
-        logger.info(f"邮件发送成功 → {email_cfg['recipient']}")
+        logger.info(f"邮件发送成功 → {', '.join(recipients)}")
         return True
     except smtplib.SMTPAuthenticationError:
         logger.error("SMTP 认证失败，请检查邮箱地址和授权码")

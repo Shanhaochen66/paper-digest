@@ -10,7 +10,9 @@ email:
   smtp_port: 587
   sender: "your_email@qq.com"           # 发件邮箱
   password: "YOUR_AUTH_CODE_HERE"       # QQ邮箱授权码（非登录密码）
-  recipient: "your_email@qq.com"        # 收件邮箱（可与发件相同）
+  recipients:                            # 收件邮箱列表（支持多个）
+    - "your_email@qq.com"
+    # - "another@example.com"
 
   # Gmail 用户请改为:
   # smtp_server: "smtp.gmail.com"

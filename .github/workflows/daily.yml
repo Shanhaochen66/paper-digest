@@ -44,7 +44,7 @@ jobs:
               cfg = yaml.safe_load(f)
           cfg['email']['sender'] = '${{ secrets.EMAIL_SENDER }}'
           cfg['email']['password'] = '${{ secrets.EMAIL_PASSWORD }}'
-          cfg['email']['recipient'] = '${{ secrets.EMAIL_RECIPIENT }}'
+          cfg['email']['recipients'] = '${{ secrets.EMAIL_RECIPIENTS }}'.split(',')
           with open('config.yaml', 'w') as f:
               yaml.dump(cfg, f, allow_unicode=True)
           print('config.yaml 已生成')
