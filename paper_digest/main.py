@@ -391,32 +391,53 @@ def _apply_title_templates(text: str) -> str:
 
 
 # ============================================================
-# 亮点提取
+# 亮点提取 / 结构化分析
 # ============================================================
-def _llm_extract_highlights(abstract: str, title: str, api_key: str,
-                             model: str = "deepseek-chat", timeout: int = 30) -> list[str]:
-    """使用 DeepSeek LLM 提取论文亮点，失败抛出异常"""
+def _llm_analyze_paper(abstract: str, title: str, api_key: str,
+                       model: str = "deepseek-chat", timeout: int = 60) -> dict:
+    """使用 DeepSeek LLM 对论文进行结构化分析，一次输出中英双语。失败抛出异常"""
     client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 
     prompt = f"""Title: {title}
 Abstract: {abstract}
 
-Extract 2-3 key highlights from this paper. Each highlight should be one sentence (20-80 words) describing a core finding or innovation. Return as JSON."""
+Analyze this paper and output a structured JSON with BOTH English (en) and Chinese (zh).
+Each section MUST be ≤300 characters. Extract 3-5 keywords.
+
+Return exactly this JSON structure:
+{{
+  "keywords_en": ["kw1", "kw2", "kw3", "kw4", "kw5"],
+  "keywords_zh": ["关键词1", "关键词2", "关键词3", "关键词4", "关键词5"],
+  "sections_en": {{
+    "research_logic": "What problem does this paper address? What is the research logic/framework?",
+    "research_methods": "What methods, models, or approaches were used?",
+    "research_results": "What are the key data results or findings?",
+    "research_conclusions": "What conclusions does the paper draw? What is the significance?",
+    "implications": "What are the implications or inspirations for other scholars in this field?"
+  }},
+  "sections_zh": {{
+    "research_logic": "本文解决什么问题？研究逻辑/框架是什么？",
+    "research_methods": "使用了什么方法、模型或技术手段？",
+    "research_results": "关键数据结果或发现是什么？",
+    "research_conclusions": "论文得出什么结论？有何意义？",
+    "implications": "对该领域其他学者有何启示或借鉴价值？"
+  }}
+}}"""
 
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": 'You are an expert in agricultural remote sensing and crop science. Extract key findings from paper abstracts. Output ONLY valid JSON: {"highlights": ["highlight1", "highlight2", "highlight3"]}. Each highlight must be a concise, self-contained sentence.'},
+            {"role": "system", "content": "You are an expert in agricultural remote sensing and crop science. Analyze paper abstracts and output structured JSON with BOTH English and Chinese. Use concise academic language. Keep each section under 300 characters. Return ONLY valid JSON, no other text."},
             {"role": "user", "content": prompt}
         ],
         response_format={"type": "json_object"},
         temperature=0.3,
-        max_tokens=500,
+        max_tokens=2000,
         timeout=timeout,
     )
 
     result = json.loads(response.choices[0].message.content)
-    return result.get("highlights", [])
+    return result
 
 
 def _rule_based_highlights(abstract: str, title: str = "", max_highlights: int = 3) -> list[str]:
@@ -479,24 +500,47 @@ def _rule_based_highlights(abstract: str, title: str = "", max_highlights: int =
     return highlights
 
 
-def extract_highlights(abstract: str, title: str = "", max_highlights: int = 3,
-                       llm_api_key: str = None, llm_model: str = "deepseek-chat") -> list[str]:
-    """从摘要中提取核心亮点。优先使用 LLM，失败则降级到规则算法。"""
-    if not abstract:
-        return []
+def _rule_based_analysis(abstract: str, title: str = "", max_highlights: int = 3) -> dict:
+    """降级方案：规则算法结果包装为结构化格式"""
+    sentences = _rule_based_highlights(abstract, title, max_highlights)
+    result_text = " ".join(sentences) if sentences else abstract[:300]
+    empty_sections = {
+        "research_logic": "",
+        "research_methods": "",
+        "research_results": "",
+        "research_conclusions": "",
+        "implications": "",
+    }
+    return {
+        "keywords_en": [],
+        "keywords_zh": [],
+        "sections_en": {**empty_sections, "research_results": result_text},
+        "sections_zh": {**empty_sections, "research_results": result_text},
+    }
 
-    # 尝试 LLM 提取
+
+def analyze_paper(abstract: str, title: str = "",
+                  llm_api_key: str = None, llm_model: str = "deepseek-chat") -> dict:
+    """对论文进行结构化分析。优先使用 LLM，失败则降级到规则算法。
+    返回: {"keywords_en": [...], "keywords_zh": [...], "sections_en": {...}, "sections_zh": {...}}
+    """
+    if not abstract:
+        return _rule_based_analysis(abstract, title)
+
+    # 尝试 LLM 分析
     if llm_api_key:
         try:
-            highlights = _llm_extract_highlights(abstract, title, llm_api_key, llm_model)
-            if highlights:
-                logger.info(f"  LLM 亮点提取成功: {len(highlights)} 条")
-                return highlights[:max_highlights]
+            result = _llm_analyze_paper(abstract, title, llm_api_key, llm_model)
+            if result and result.get("sections_en"):
+                n_sections = len(result["sections_en"])
+                n_kw = len(result.get("keywords_en", []))
+                logger.info(f"  LLM 结构化分析成功: {n_sections} 节, {n_kw} 个关键词")
+                return result
         except Exception as e:
-            logger.warning(f"  LLM 亮点提取失败，降级到规则算法: {e}")
+            logger.warning(f"  LLM 分析失败，降级到规则算法: {e}")
 
-    # 降级：原有规则算法
-    return _rule_based_highlights(abstract, title, max_highlights)
+    # 降级
+    return _rule_based_analysis(abstract, title)
 
 
 # ============================================================
@@ -574,8 +618,10 @@ class Paper(dict):
             publication_date=publication_date or "",
             # 翻译和亮点字段（延迟填充）
             title_zh="",
-            highlights_en=[],
-            highlights_zh=[],
+            keywords_en=[],
+            keywords_zh=[],
+            highlights_en={},
+            highlights_zh={},
         )
 
     def __getattr__(self, name):
@@ -787,33 +833,35 @@ def filter_by_if(papers: list[Paper], threshold: float = 5.0) -> list[Paper]:
 
 def enrich_papers(papers: list[Paper], ds_cfg: dict = None) -> list[Paper]:
     """
-    为每篇论文补充: 中文标题翻译 + 亮点提取 + 亮点翻译
+    为每篇论文补充: 中文标题翻译 + 结构化分析 + 关键词
     ds_cfg: DeepSeek 配置 {"api_key": "...", "model": "deepseek-chat"}
     """
     ds_cfg = ds_cfg or {}
     llm_api_key = ds_cfg.get("api_key", "")
     llm_model = ds_cfg.get("model", "deepseek-chat")
 
-    logger.info(f"翻译与亮点提取: {len(papers)} 篇...")
+    logger.info(f"翻译与结构化分析: {len(papers)} 篇...")
     llm_enabled = bool(llm_api_key)
-    logger.info(f"  LLM 亮点提取: {'已启用 (DeepSeek)' if llm_enabled else '已禁用，使用规则算法'}")
+    logger.info(f"  LLM 分析: {'已启用 (DeepSeek)' if llm_enabled else '已禁用，使用规则算法'}")
 
     for i, p in enumerate(papers):
         # 翻译标题
         p["title_zh"] = translate_text(p["title"])
-        # 提取英文亮点（LLM 优先，失败降级）
-        p["highlights_en"] = extract_highlights(
+        # 结构化分析（LLM 一次输出中英双语 + 关键词）
+        analysis = analyze_paper(
             p["abstract"], p["title"],
             llm_api_key=llm_api_key, llm_model=llm_model
         )
-        # 翻译亮点
-        p["highlights_zh"] = [translate_text(h) for h in p["highlights_en"]]
+        p["keywords_en"] = analysis.get("keywords_en", [])
+        p["keywords_zh"] = analysis.get("keywords_zh", [])
+        p["highlights_en"] = analysis.get("sections_en", {})
+        p["highlights_zh"] = analysis.get("sections_zh", {})
 
         if (i + 1) % 5 == 0:
-            logger.info(f"  翻译进度: {i+1}/{len(papers)}")
-        time.sleep(0.2)  # 翻译 API 限流保护
+            logger.info(f"  分析进度: {i+1}/{len(papers)}")
+        time.sleep(0.2)
 
-    logger.info(f"翻译与亮点提取完成")
+    logger.info(f"翻译与结构化分析完成")
     return papers
 
 
@@ -837,6 +885,17 @@ def save_sent_papers(keys: set[str], path: Path = SENT_PAPERS_FILE):
 # 双语 HTML 邮件
 # ============================================================
 def build_html_email(papers: list[Paper], date_str: str, threshold: float) -> str:
+    # 5 个分析小节的标签（中英对照）
+    SECTION_LABELS = [
+        ("1. 研究逻辑思路", "1. Research Logic"),
+        ("2. 研究方法", "2. Research Methods"),
+        ("3. 研究数据结果", "3. Data & Results"),
+        ("4. 研究结论及意义", "4. Conclusions & Significance"),
+        ("5. 对其他学者的启示", "5. Implications for Scholars"),
+    ]
+    SECTION_KEYS = ["research_logic", "research_methods", "research_results",
+                    "research_conclusions", "implications"]
+
     items = []
     for i, p in enumerate(papers, 1):
         title_en = p["title"]
@@ -849,88 +908,104 @@ def build_html_email(papers: list[Paper], date_str: str, threshold: float) -> st
         if len(p["authors"]) > 4:
             authors += " et al."
 
-        # 亮点（中文 + 英文对照）
-        highlights_en = p.get("highlights_en", [])
-        highlights_zh = p.get("highlights_zh", [])
-        highlight_pairs = []
-        for j in range(max(len(highlights_en), len(highlights_zh))):
-            en = highlights_en[j] if j < len(highlights_en) else ""
-            zh = highlights_zh[j] if j < len(highlights_zh) else ""
-            highlight_pairs.append((en, zh))
+        # 关键词标签
+        keywords_zh = p.get("keywords_zh", [])
+        keywords_en = p.get("keywords_en", [])
+        kw_tags = ""
+        if keywords_zh:
+            kw_tags = " ".join(f'<span class="kw-tag">{kw}</span>' for kw in keywords_zh)
+        if keywords_en:
+            kw_tags += " " + " ".join(f'<span class="kw-tag-en">{kw}</span>' for kw in keywords_en)
 
-        if_badge = f'<span class="if-badge">IF {if_val:.1f}</span>' if if_val else ""
+        # 结构化分析小节
+        sections_en = p.get("highlights_en", {})
+        sections_zh = p.get("highlights_zh", {})
+        section_html = ""
+        for idx, (label_zh, label_en) in enumerate(SECTION_LABELS):
+            key = SECTION_KEYS[idx]
+            zh_text = sections_zh.get(key, "") if isinstance(sections_zh, dict) else ""
+            en_text = sections_en.get(key, "") if isinstance(sections_en, dict) else ""
+            if not zh_text and not en_text:
+                continue
+            section_html += f"""
+                <div class="sec-item">
+                    <p class="sec-label">{label_zh}</p>
+                    <p class="sec-zh">{zh_text}</p>
+                    <p class="sec-en">{en_text}</p>
+                </div>"""
+
+        if not section_html:
+            section_html = '<p class="sec-empty">暂无结构化分析数据</p>'
 
         items.append(f"""
         <div class="paper">
-            <p class="paper-index-line">
+            <div class="paper-index-line">
                 <span class="paper-index">{i}</span>
                 <span class="if-badge">IF {if_val:.1f}</span>
                 <span class="paper-journal">{journal}</span>
                 <span class="paper-year">{year}</span>
-            </p>
+            </div>
             <p class="paper-title-zh">{title_zh}</p>
             <p class="paper-title-en">{title_en}</p>
             <p class="paper-authors">{authors}</p>
-            <div class="highlights">
-                <p class="hl-label">✨ 文章亮点 Highlights</p>
-                {''.join(f'''
-                <div class="hl-item">
-                    <p class="hl-zh">🔹 {zh}</p>
-                    <p class="hl-en">{en}</p>
-                </div>''' for en, zh in highlight_pairs)}
-            </div>
-            <a class="paper-link" href="{url}" target="_blank">📄 查看原文 → {url}</a>
+            {f'<div class="keywords">{kw_tags}</div>' if kw_tags else ""}
+            <div class="analysis">{section_html}</div>
+            <a class="paper-link" href="{url}" target="_blank">📄 查看原文 →</a>
         </div>""")
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body>
 <style>
-    body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }}
-    .container {{ max-width: 750px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden; }}
-    .header {{ background: linear-gradient(135deg, #1a5c30 0%, #2d8c4a 50%, #1a7a30 100%); color: #fff; padding: 32px 40px; }}
-    .header h1 {{ margin: 0 0 6px; font-size: 24px; font-weight: 700; }}
-    .header .subtitle {{ opacity: 0.9; font-size: 14px; }}
-    .summary {{ padding: 18px 40px; background: #edf7f0; border-bottom: 1px solid #d4e8d8; font-size: 14px; color: #3a6b4a; }}
+    body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #f0f2f5; margin: 0; padding: 0; -webkit-text-size-adjust: 100%; }}
+    .container {{ max-width: 100%; margin: 0; background: #fff; overflow: hidden; }}
+    .header {{ background: linear-gradient(135deg, #1a5c30 0%, #2d8c4a 50%, #1a7a30 100%); color: #fff; padding: 18px 14px; }}
+    .header h1 {{ margin: 0 0 4px; font-size: 20px; font-weight: 700; }}
+    .header .subtitle {{ opacity: 0.9; font-size: 12px; line-height: 1.4; }}
+    .summary {{ padding: 12px 14px; background: #edf7f0; border-bottom: 1px solid #d4e8d8; font-size: 13px; color: #3a6b4a; line-height: 1.5; }}
     .summary strong {{ color: #1a5c30; }}
-    .paper-list {{ padding: 20px 40px 28px; }}
-    .paper {{ border: 1px solid #e8e8e8; border-radius: 8px; padding: 20px 24px; margin-bottom: 18px; transition: box-shadow 0.2s; }}
-    .paper:hover {{ box-shadow: 0 2px 8px rgba(0,0,0,0.06); }}
-    .paper-index-line {{ display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }}
-    .paper-index {{ display: inline-flex; align-items: center; justify-content: center; background: #1a5c30; color: #fff; border-radius: 50%; width: 26px; height: 26px; font-size: 13px; font-weight: 700; flex-shrink: 0; }}
-    .if-badge {{ background: #e8f5e9; color: #1a5c30; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }}
-    .paper-journal {{ font-size: 13px; color: #555; font-weight: 600; flex: 1; }}
-    .paper-year {{ font-size: 12px; color: #999; }}
-    .paper-title-zh {{ font-size: 17px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; line-height: 1.5; }}
-    .paper-title-en {{ font-size: 14px; color: #666; margin: 0 0 8px; line-height: 1.4; font-style: italic; }}
-    .paper-authors {{ font-size: 12px; color: #999; margin: 0 0 12px; }}
-    .highlights {{ background: #fafcfa; border-left: 3px solid #2d8c4a; padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; }}
-    .hl-label {{ font-size: 12px; font-weight: 700; color: #2d8c4a; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }}
-    .hl-item {{ margin-bottom: 8px; }}
-    .hl-item:last-child {{ margin-bottom: 0; }}
-    .hl-zh {{ font-size: 13px; color: #333; margin: 0 0 2px; line-height: 1.6; }}
-    .hl-en {{ font-size: 12px; color: #888; margin: 0; line-height: 1.5; }}
-    .paper-link {{ display: inline-block; margin-top: 10px; font-size: 12px; color: #2d8c4a; text-decoration: none; word-break: break-all; }}
+    .paper-list {{ padding: 8px 6px; }}
+    .paper {{ border-bottom: 1px solid #eee; padding: 14px 10px; }}
+    .paper:last-child {{ border-bottom: none; }}
+    .paper-index-line {{ display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }}
+    .paper-index {{ display: inline-flex; align-items: center; justify-content: center; background: #1a5c30; color: #fff; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; font-weight: 700; flex-shrink: 0; }}
+    .if-badge {{ background: #e8f5e9; color: #1a5c30; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }}
+    .paper-journal {{ font-size: 12px; color: #555; font-weight: 600; }}
+    .paper-year {{ font-size: 11px; color: #999; }}
+    .paper-title-zh {{ font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 0 0 3px; line-height: 1.5; }}
+    .paper-title-en {{ font-size: 13px; color: #666; margin: 0 0 6px; line-height: 1.4; font-style: italic; }}
+    .paper-authors {{ font-size: 11px; color: #999; margin: 0 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+    .keywords {{ margin: 8px 0; }}
+    .kw-tag {{ display: inline-block; background: #e8f0fe; color: #1a56b5; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin: 2px 4px 2px 0; }}
+    .kw-tag-en {{ display: inline-block; background: #f0f0f0; color: #666; padding: 2px 8px; border-radius: 12px; font-size: 10px; margin: 2px 4px 2px 0; }}
+    .analysis {{ margin: 10px 0; }}
+    .sec-item {{ background: #fafcfa; border-left: 3px solid #2d8c4a; padding: 8px 10px; margin-bottom: 8px; border-radius: 0 4px 4px 0; }}
+    .sec-item:last-child {{ margin-bottom: 0; }}
+    .sec-label {{ font-size: 12px; font-weight: 700; color: #2d8c4a; margin: 0 0 4px; }}
+    .sec-zh {{ font-size: 13px; color: #333; margin: 0 0 2px; line-height: 1.6; }}
+    .sec-en {{ font-size: 11px; color: #999; margin: 0; line-height: 1.5; }}
+    .sec-empty {{ font-size: 12px; color: #999; font-style: italic; text-align: center; padding: 10px; }}
+    .paper-link {{ display: inline-block; margin-top: 8px; font-size: 12px; color: #2d8c4a; text-decoration: none; }}
     .paper-link:hover {{ text-decoration: underline; }}
-    .footer {{ padding: 18px 40px; background: #fafafa; border-top: 1px solid #eee; font-size: 12px; color: #999; text-align: center; line-height: 1.8; }}
+    .footer {{ padding: 14px 14px; background: #fafafa; border-top: 1px solid #eee; font-size: 11px; color: #999; text-align: center; line-height: 1.6; }}
     .footer a {{ color: #2d8c4a; }}
 </style>
 <div class="container">
     <div class="header">
         <h1>🌾 农业遥感论文日报</h1>
-        <div class="subtitle">{date_str} · 影响因子 ≥ {threshold} · 共 {len(papers)} 篇 · 中英双语</div>
+        <div class="subtitle">{date_str} · IF ≥ {threshold} · 共 {len(papers)} 篇 · 中英双语</div>
     </div>
     <div class="summary">
         📊 今日精选 <strong>{len(papers)}</strong> 篇农业遥感方向高水平论文，按影响因子降序排列。
-        每篇附 <strong>中文标题翻译</strong> + <strong>核心亮点提炼（中英对照）</strong> + 原文链接。
+        每篇附 <strong>中文标题翻译</strong> + <strong>关键词</strong> + <strong>五维结构化分析</strong> + 原文链接。
     </div>
     <div class="paper-list">
         {"".join(items)}
     </div>
     <div class="footer">
-        <p>由 <strong>Paper Digest Bot v2</strong> 自动生成 · 数据源: <a href="https://crossref.org">Crossref</a></p>
-        <p>翻译服务: 内置术语词典+模板引擎 · 亮点提取: 算法自动提炼 · 去重策略: DOI 永久去重</p>
+        <p>由 <strong>Paper Digest Bot v3</strong> 自动生成 · 数据源: <a href="https://crossref.org">Crossref</a></p>
+        <p>分析引擎: DeepSeek LLM · 去重策略: DOI 永久去重</p>
     </div>
 </div>
 </body>
@@ -1055,7 +1130,10 @@ def main():
             zh_title = p.get("title_zh", "")[:60]
             logger.info(f"  {i}. [{if_val}] {p['title'][:80]}")
             logger.info(f"     中文: {zh_title}")
-            logger.info(f"     亮点: {len(p.get('highlights_en', []))} 条")
+            sections = p.get("highlights_en", {})
+            n_sections = len(sections) if isinstance(sections, dict) else 0
+            keywords = p.get("keywords_zh", [])
+            logger.info(f"     分析: {n_sections} 节, 关键词: {', '.join(keywords) if keywords else '无'}")
             logger.info(f"     {p['journal']} ({p['year']})")
         logger.info("-" * 60)
         logger.info(f"共 {len(fresh_papers)} 篇新论文 (dry-run)")
