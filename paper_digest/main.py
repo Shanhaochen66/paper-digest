@@ -1104,22 +1104,23 @@ def main():
     high_if_papers.sort(key=lambda p: p.get("impact_factor") or 0, reverse=True)
     logger.info(f"  按 IF 降序排列完成，最高 IF={high_if_papers[0]['impact_factor']:.1f}" if high_if_papers else "  无高IF论文")
 
+    # ---- 排除已发送 + 截断 ----
+    logger.info("[4/6] 排除已发送论文...")
+    sent_keys = load_sent_papers()
+    high_if_papers = [p for p in high_if_papers if p.dedup_key not in sent_keys]
+    logger.info(f"  排除已发送后: {len(high_if_papers)} 篇")
+
+    if len(high_if_papers) > max_papers:
+        logger.info(f"  截断: {max_papers} 篇（优先保留高 IF）")
+        high_if_papers = high_if_papers[:max_papers]
+
     # ---- 翻译 + 亮点 ----
     if not args.no_translate:
-        logger.info("[4/6] 翻译与亮点提取...")
+        logger.info("[5/6] 翻译与结构化分析...")
         high_if_papers = enrich_papers(high_if_papers, config.get("deepseek"))
     else:
-        logger.info("[4/6] 跳过翻译 (--no-translate)")
-
-    # ---- 排除已发送 ----
-    logger.info("[5/6] 排除已发送论文...")
-    sent_keys = load_sent_papers()
-    fresh_papers = [p for p in high_if_papers if p.dedup_key not in sent_keys]
-    logger.info(f"  排除已发送: {len(high_if_papers)} → {len(fresh_papers)} 篇")
-
-    if len(fresh_papers) > max_papers:
-        logger.info(f"  截断: {max_papers} 篇（优先保留高 IF）")
-        fresh_papers = fresh_papers[:max_papers]
+        logger.info("[5/6] 跳过翻译 (--no-translate)")
+    fresh_papers = high_if_papers
 
     # ---- 发送 ----
     date_str = datetime.now().strftime("%Y-%m-%d")
