@@ -10,6 +10,10 @@ on:
   # 允许手动触发
   workflow_dispatch:
 
+# 授予写入权限，以便推送 sent_papers.json 更新
+permissions:
+  contents: write
+
 jobs:
   digest:
     runs-on: ubuntu-latest
@@ -27,27 +31,25 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run daily digest
-        env:
-          # 可选：通过 GitHub Secrets 覆盖配置中的邮箱密码
-          # 如果在 config.yaml 中已配置 password，可跳过此步
-          EMAIL_PASSWORD_OVERRIDE: ${{ secrets.EMAIL_PASSWORD }}
+      - name: Generate config from Secrets
         run: |
-          # 如果设置了 GitHub Secret，用它覆盖 config.yaml 中的密码
-          if [ -n "$EMAIL_PASSWORD_OVERRIDE" ]; then
-            python -c "
-import yaml
-with open('config.yaml', 'r') as f:
-    c = yaml.safe_load(f)
-c['email']['password'] = '${{ secrets.EMAIL_PASSWORD }}'
-with open('config.yaml', 'w') as f:
-    yaml.dump(c, f, allow_unicode=True)
-"
-          fi
-          python main.py
+          cp config.example.yaml config.yaml
+          python -c "
+          import yaml
+          with open('config.yaml', 'r') as f:
+              cfg = yaml.safe_load(f)
+          cfg['email']['sender'] = '${{ secrets.EMAIL_SENDER }}'
+          cfg['email']['password'] = '${{ secrets.EMAIL_PASSWORD }}'
+          cfg['email']['recipient'] = '${{ secrets.EMAIL_RECIPIENT }}'
+          with open('config.yaml', 'w') as f:
+              yaml.dump(cfg, f, allow_unicode=True)
+          print('config.yaml 已生成')
+          "
+
+      - name: Run daily digest
+        run: python main.py
 
       - name: Commit sent papers update
-        # 运行后将 sent_papers.json 和 journals_if.json 的更新提交回仓库
         if: success()
         run: |
           git config user.name "paper-digest-bot"
