@@ -21,7 +21,7 @@ email:
 
 # --- 论文过滤 ---
 filter:
-  if_threshold: 5.5                     # 影响因子阈值
+  if_threshold: 5.0                     # 影响因子阈值
   days_back: 180                        # 检索最近 N 天的论文
   max_papers_per_email: 10              # 每封邮件最多包含论文数
 
