@@ -1,0 +1,561 @@
+{
+  "__comment__": "农业遥感相关期刊影响因子数据库。key = 期刊全名（小写无标点），if = 2024 近似影响因子，aliases = 常见缩写/变体",
+
+  "remote sensing of environment": {
+    "if": 13.5, "issn": ["0034-4257"],
+    "aliases": ["Remote Sensing of Environment", "Remote Sens. Environ.", "Remote Sens Environ", "RSE"]
+  },
+  "isprs journal of photogrammetry and remote sensing": {
+    "if": 12.7, "issn": ["0924-2716"],
+    "aliases": ["ISPRS Journal of Photogrammetry and Remote Sensing", "ISPRS J. Photogramm. Remote Sens.", "ISPRS J Photogramm Remote Sens", "ISPRS Journal of Photogrammetry & Remote Sensing", "ISPRS"]
+  },
+  "ieee transactions on geoscience and remote sensing": {
+    "if": 8.8, "issn": ["0196-2892"],
+    "aliases": ["IEEE Transactions on Geoscience and Remote Sensing", "IEEE Trans. Geosci. Remote Sens.", "IEEE Trans Geosci Remote Sens", "IEEE T GEOSCI REMOTE", "TGRS"]
+  },
+  "international journal of applied earth observation and geoinformation": {
+    "if": 7.5, "issn": ["1569-8432", "0303-2434"],
+    "aliases": ["International Journal of Applied Earth Observation and Geoinformation", "Int. J. Appl. Earth Obs. Geoinf.", "Int J Appl Earth Obs Geoinf", "JAG", "ITC Journal"]
+  },
+  "ieee journal of selected topics in applied earth observations and remote sensing": {
+    "if": 5.5, "issn": ["1939-1404"],
+    "aliases": ["IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing", "IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens.", "IEEE J-STARS", "JSTARS"]
+  },
+  "giscience & remote sensing": {
+    "if": 6.7, "issn": ["1548-1603"],
+    "aliases": ["GIScience & Remote Sensing", "GIScience and Remote Sensing", "GISci. Remote Sens.", "GISci Remote Sens"]
+  },
+  "earth system science data": {
+    "if": 11.4, "issn": ["1866-3508"],
+    "aliases": ["Earth System Science Data", "Earth Syst. Sci. Data", "Earth Syst Sci Data", "ESSD"]
+  },
+  "earth-science reviews": {
+    "if": 12.1, "issn": ["0012-8252"],
+    "aliases": ["Earth-Science Reviews", "Earth Sci. Rev.", "Earth Sci Rev"]
+  },
+  "remote sensing in ecology and conservation": {
+    "if": 5.5, "issn": ["2056-3485"],
+    "aliases": ["Remote Sensing in Ecology and Conservation", "Remote Sens. Ecol. Conserv."]
+  },
+  "remote sensing": {
+    "if": 5.0, "issn": ["2072-4292"],
+    "aliases": ["Remote Sensing", "Remote Sens.", "Remote Sens (Basel)", "Remote Sensing (MDPI)"]
+  },
+  "ieee geoscience and remote sensing magazine": {
+    "if": 14.6, "issn": ["2473-2397"],
+    "aliases": ["IEEE Geoscience and Remote Sensing Magazine", "IEEE Geosci. Remote Sens. Mag.", "IEEE GRSM"]
+  },
+  "canadian journal of remote sensing": {
+    "if": 5.0, "issn": ["0703-8992"],
+    "aliases": ["Canadian Journal of Remote Sensing", "Can. J. Remote Sens."]
+  },
+  "journal of geodesy": {
+    "if": 5.2, "issn": ["0949-7714"],
+    "aliases": ["Journal of Geodesy", "J. Geod.", "J Geod"]
+  },
+  "photogrammetric engineering and remote sensing": {
+    "if": 5.0, "issn": ["0099-1112"],
+    "aliases": ["Photogrammetric Engineering and Remote Sensing", "Photogramm. Eng. Remote Sens.", "PE&RS"]
+  },
+
+  "computers and electronics in agriculture": {
+    "if": 8.3, "issn": ["0168-1699"],
+    "aliases": ["Computers and Electronics in Agriculture", "Comput. Electron. Agric.", "Comput Electron Agric", "Computers & Electronics in Agriculture", "CEA"]
+  },
+  "agricultural and forest meteorology": {
+    "if": 6.2, "issn": ["0168-1923"],
+    "aliases": ["Agricultural and Forest Meteorology", "Agric. For. Meteorol.", "Agric For Meteorol", "Agricultural & Forest Meteorology", "AFM"]
+  },
+  "field crops research": {
+    "if": 5.8, "issn": ["0378-4290"],
+    "aliases": ["Field Crops Research", "Field Crops Res.", "Field Crops Res", "FCR"]
+  },
+  "agricultural systems": {
+    "if": 6.6, "issn": ["0308-521X"],
+    "aliases": ["Agricultural Systems", "Agric. Syst.", "Agric Syst"]
+  },
+  "european journal of agronomy": {
+    "if": 5.2, "issn": ["1161-0301"],
+    "aliases": ["European Journal of Agronomy", "Eur. J. Agron.", "Eur J Agron", "EJA"]
+  },
+  "precision agriculture": {
+    "if": 5.1, "issn": ["1385-2256"],
+    "aliases": ["Precision Agriculture", "Precis. Agric.", "Precis Agric"]
+  },
+  "agricultural water management": {
+    "if": 6.7, "issn": ["0378-3774"],
+    "aliases": ["Agricultural Water Management", "Agric. Water Manag.", "Agric Water Manag", "AWM"]
+  },
+  "soil & tillage research": {
+    "if": 6.5, "issn": ["0167-1987"],
+    "aliases": ["Soil & Tillage Research", "Soil and Tillage Research", "Soil Tillage Res.", "Soil Tillage Res", "Soil & Tillage Res"]
+  },
+  "agronomy for sustainable development": {
+    "if": 7.3, "issn": ["1774-0746"],
+    "aliases": ["Agronomy for Sustainable Development", "Agron. Sustain. Dev.", "Agron Sustain Dev"]
+  },
+  "agriculture ecosystems & environment": {
+    "if": 6.6, "issn": ["0167-8809"],
+    "aliases": ["Agriculture Ecosystems & Environment", "Agriculture Ecosystems and Environment", "Agric. Ecosyst. Environ.", "Agric Ecosyst Environ", "Agriculture, Ecosystems & Environment", "AEE"]
+  },
+  "crop journal": {
+    "if": 6.0, "issn": ["2214-5141"],
+    "aliases": ["The Crop Journal", "Crop J.", "Crop J"]
+  },
+  "rice": {
+    "if": 5.5, "issn": ["1939-8425"],
+    "aliases": ["Rice", "Rice (New York)"]
+  },
+  "food policy": {
+    "if": 6.5, "issn": ["0306-9192"],
+    "aliases": ["Food Policy", "Food Policy"]
+  },
+  "global food security": {
+    "if": 8.4, "issn": ["2211-9124"],
+    "aliases": ["Global Food Security", "Glob. Food Secur.", "Glob Food Sec"]
+  },
+  "journal of the science of food and agriculture": {
+    "if": 5.1, "issn": ["0022-5142"],
+    "aliases": ["Journal of the Science of Food and Agriculture", "J. Sci. Food Agric.", "J Sci Food Agric", "JSFA"]
+  },
+  "postharvest biology and technology": {
+    "if": 5.2, "issn": ["0925-5214"],
+    "aliases": ["Postharvest Biology and Technology", "Postharvest Biol. Technol.", "Postharvest Biol Technol"]
+  },
+  "food chemistry": {
+    "if": 8.8, "issn": ["0308-8146"],
+    "aliases": ["Food Chemistry", "Food Chem.", "Food Chem"]
+  },
+  "geoderma": {
+    "if": 6.1, "issn": ["0016-7061"],
+    "aliases": ["Geoderma", "Geoderma"]
+  },
+  "catena": {
+    "if": 6.2, "issn": ["0341-8162"],
+    "aliases": ["CATENA", "Catena"]
+  },
+  "soil biology and biochemistry": {
+    "if": 8.4, "issn": ["0038-0717"],
+    "aliases": ["Soil Biology and Biochemistry", "Soil Biol. Biochem.", "Soil Biol Biochem", "SBB"]
+  },
+  "biology and fertility of soils": {
+    "if": 5.5, "issn": ["0178-2762"],
+    "aliases": ["Biology and Fertility of Soils", "Biol. Fertil. Soils", "Biol Fertil Soils"]
+  },
+  "plant and soil": {
+    "if": 5.3, "issn": ["0032-079X"],
+    "aliases": ["Plant and Soil", "Plant Soil"]
+  },
+  "nutrient cycling in agroecosystems": {
+    "if": 5.8, "issn": ["1385-1314"],
+    "aliases": ["Nutrient Cycling in Agroecosystems", "Nutr. Cycl. Agroecosyst.", "Nutr Cycl Agroecosyst"]
+  },
+  "applied soil ecology": {
+    "if": 5.1, "issn": ["0929-1393"],
+    "aliases": ["Applied Soil Ecology", "Appl. Soil Ecol.", "Appl Soil Ecol"]
+  },
+  "environmental and experimental botany": {
+    "if": 5.7, "issn": ["0098-8472"],
+    "aliases": ["Environmental and Experimental Botany", "Environ. Exp. Bot.", "Environ Exp Bot"]
+  },
+  "industrial crops and products": {
+    "if": 5.9, "issn": ["0926-6690"],
+    "aliases": ["Industrial Crops and Products", "Ind. Crops Prod.", "Ind Crops Prod"]
+  },
+
+  "science of the total environment": {
+    "if": 9.8, "issn": ["0048-9697"],
+    "aliases": ["Science of the Total Environment", "Sci. Total Environ.", "Sci Total Environ", "STOTEN"]
+  },
+  "environment international": {
+    "if": 11.8, "issn": ["0160-4120"],
+    "aliases": ["Environment International", "Environ. Int.", "Environ Int"]
+  },
+  "environmental pollution": {
+    "if": 8.9, "issn": ["0269-7491"],
+    "aliases": ["Environmental Pollution", "Environ. Pollut.", "Environ Pollut", "EP"]
+  },
+  "global change biology": {
+    "if": 11.6, "issn": ["1354-1013"],
+    "aliases": ["Global Change Biology", "Glob. Change Biol.", "Glob Chang Biol", "GCB"]
+  },
+  "global environmental change": {
+    "if": 8.9, "issn": ["0959-3780"],
+    "aliases": ["Global Environmental Change", "Glob. Environ. Change", "Glob Environ Chang"]
+  },
+  "environmental research letters": {
+    "if": 6.9, "issn": ["1748-9326"],
+    "aliases": ["Environmental Research Letters", "Environ. Res. Lett.", "Environ Res Lett", "ERL"]
+  },
+  "environmental science & technology": {
+    "if": 11.4, "issn": ["0013-936X"],
+    "aliases": ["Environmental Science & Technology", "Environmental Science and Technology", "Environ. Sci. Technol.", "Environ Sci Technol", "ES&T"]
+  },
+  "journal of cleaner production": {
+    "if": 11.1, "issn": ["0959-6526"],
+    "aliases": ["Journal of Cleaner Production", "J. Clean. Prod.", "J Clean Prod", "JCLP"]
+  },
+  "resources conservation and recycling": {
+    "if": 13.2, "issn": ["0921-3449"],
+    "aliases": ["Resources Conservation and Recycling", "Resour. Conserv. Recycl.", "Resour Conserv Recycl", "RCR"]
+  },
+  "ecological indicators": {
+    "if": 6.9, "issn": ["1470-160X"],
+    "aliases": ["Ecological Indicators", "Ecol. Indic.", "Ecol Indic"]
+  },
+  "journal of environmental management": {
+    "if": 8.7, "issn": ["0301-4797"],
+    "aliases": ["Journal of Environmental Management", "J. Environ. Manag.", "J Environ Manag", "JEM"]
+  },
+  "environmental modelling & software": {
+    "if": 5.5, "issn": ["1364-8152"],
+    "aliases": ["Environmental Modelling & Software", "Environmental Modelling and Software", "Environ. Model. Softw.", "Environ Model Softw", "EMS"]
+  },
+  "chemosphere": {
+    "if": 8.8, "issn": ["0045-6535"],
+    "aliases": ["Chemosphere", "Chemosphere"]
+  },
+  "journal of hazardous materials": {
+    "if": 13.6, "issn": ["0304-3894"],
+    "aliases": ["Journal of Hazardous Materials", "J. Hazard. Mater.", "J Hazard Mater", "JHM"]
+  },
+  "environmental health perspectives": {
+    "if": 10.4, "issn": ["0091-6765"],
+    "aliases": ["Environmental Health Perspectives", "Environ. Health Perspect.", "Environ Health Perspect", "EHP"]
+  },
+  "environmental science and ecotechnology": {
+    "if": 12.6, "issn": ["2666-4984"],
+    "aliases": ["Environmental Science and Ecotechnology", "Environ. Sci. Ecotechnol.", "ESE"]
+  },
+  "communications earth & environment": {
+    "if": 7.9, "issn": ["2662-4435"],
+    "aliases": ["Communications Earth & Environment", "Commun. Earth Environ.", "Commun Earth Environ"]
+  },
+  "earth's future": {
+    "if": 8.2, "issn": ["2328-4277"],
+    "aliases": ["Earth's Future", "Earths Future"]
+  },
+  "global biogeochemical cycles": {
+    "if": 5.2, "issn": ["0886-6236"],
+    "aliases": ["Global Biogeochemical Cycles", "Glob. Biogeochem. Cycles", "Glob Biogeochem Cycles"]
+  },
+  "geophysical research letters": {
+    "if": 5.2, "issn": ["0094-8276"],
+    "aliases": ["Geophysical Research Letters", "Geophys. Res. Lett.", "Geophys Res Lett", "GRL"]
+  },
+
+  "water research": {
+    "if": 12.8, "issn": ["0043-1354"],
+    "aliases": ["Water Research", "Water Res.", "Water Res"]
+  },
+  "journal of hydrology": {
+    "if": 6.4, "issn": ["0022-1694"],
+    "aliases": ["Journal of Hydrology", "J. Hydrol.", "J Hydrol"]
+  },
+  "hydrology and earth system sciences": {
+    "if": 6.3, "issn": ["1027-5606"],
+    "aliases": ["Hydrology and Earth System Sciences", "Hydrol. Earth Syst. Sci.", "Hydrol Earth Syst Sci", "HESS"]
+  },
+  "advances in water resources": {
+    "if": 5.0, "issn": ["0309-1708"],
+    "aliases": ["Advances in Water Resources", "Adv. Water Resour.", "Adv Water Resour"]
+  },
+  "water resources research": {
+    "if": 5.4, "issn": ["0043-1397"],
+    "aliases": ["Water Resources Research", "Water Resour. Res.", "Water Resour Res", "WRR"]
+  },
+
+  "nature plants": {
+    "if": 18.0, "issn": ["2055-0278"],
+    "aliases": ["Nature Plants", "Nat. Plants", "Nat Plants"]
+  },
+  "new phytologist": {
+    "if": 10.2, "issn": ["0028-646X"],
+    "aliases": ["New Phytologist", "New Phytol.", "New Phytol"]
+  },
+  "plant biotechnology journal": {
+    "if": 13.8, "issn": ["1467-7644"],
+    "aliases": ["Plant Biotechnology Journal", "Plant Biotechnol. J.", "Plant Biotechnol J", "PBJ"]
+  },
+  "journal of experimental botany": {
+    "if": 6.9, "issn": ["0022-0957"],
+    "aliases": ["Journal of Experimental Botany", "J. Exp. Bot.", "J Exp Bot", "JXB"]
+  },
+  "plant physiology": {
+    "if": 7.6, "issn": ["0032-0889"],
+    "aliases": ["Plant Physiology", "Plant Physiol.", "Plant Physiol"]
+  },
+  "plant journal": {
+    "if": 7.2, "issn": ["0960-7412"],
+    "aliases": ["The Plant Journal", "Plant J.", "Plant J"]
+  },
+  "plant cell and environment": {
+    "if": 7.3, "issn": ["0140-7791"],
+    "aliases": ["Plant Cell and Environment", "Plant Cell Environ.", "Plant Cell Environ", "PCE"]
+  },
+  "plant cell": {
+    "if": 11.6, "issn": ["1040-4651"],
+    "aliases": ["The Plant Cell", "Plant Cell"]
+  },
+  "frontiers in plant science": {
+    "if": 5.6, "issn": ["1664-462X"],
+    "aliases": ["Frontiers in Plant Science", "Front. Plant Sci.", "Front Plant Sci"]
+  },
+  "physiologia plantarum": {
+    "if": 5.4, "issn": ["0031-9317"],
+    "aliases": ["Physiologia Plantarum", "Physiol. Plant.", "Physiol Plant"]
+  },
+  "annals of botany": {
+    "if": 5.0, "issn": ["0305-7364"],
+    "aliases": ["Annals of Botany", "Ann. Bot.", "Ann Bot"]
+  },
+  "journal of integrative plant biology": {
+    "if": 5.2, "issn": ["1672-9072"],
+    "aliases": ["Journal of Integrative Plant Biology", "J. Integr. Plant Biol.", "J Integr Plant Biol", "JIPB"]
+  },
+  "horticulture research": {
+    "if": 5.1, "issn": ["2662-6810"],
+    "aliases": ["Horticulture Research", "Hortic. Res.", "Hortic Res"]
+  },
+
+  "nature": {
+    "if": 64.8, "issn": ["0028-0836"],
+    "aliases": ["Nature"]
+  },
+  "science": {
+    "if": 56.9, "issn": ["0036-8075"],
+    "aliases": ["Science"]
+  },
+  "nature communications": {
+    "if": 16.6, "issn": ["2041-1723"],
+    "aliases": ["Nature Communications", "Nat. Commun.", "Nat Commun"]
+  },
+  "science advances": {
+    "if": 13.6, "issn": ["2375-2548"],
+    "aliases": ["Science Advances", "Sci. Adv.", "Sci Adv"]
+  },
+  "proceedings of the national academy of sciences": {
+    "if": 11.1, "issn": ["0027-8424"],
+    "aliases": ["Proceedings of the National Academy of Sciences", "Proc. Natl. Acad. Sci. USA", "Proc Natl Acad Sci USA", "PNAS"]
+  },
+  "nature climate change": {
+    "if": 30.0, "issn": ["1758-678X"],
+    "aliases": ["Nature Climate Change", "Nat. Clim. Change", "Nat Clim Chang"]
+  },
+  "nature food": {
+    "if": 23.2, "issn": ["2662-1355"],
+    "aliases": ["Nature Food", "Nat. Food", "Nat Food"]
+  },
+  "nature geoscience": {
+    "if": 18.3, "issn": ["1752-0894"],
+    "aliases": ["Nature Geoscience", "Nat. Geosci.", "Nat Geosci"]
+  },
+  "nature sustainability": {
+    "if": 27.7, "issn": ["2398-9629"],
+    "aliases": ["Nature Sustainability", "Nat. Sustain.", "Nat Sustain"]
+  },
+  "nature ecology & evolution": {
+    "if": 16.8, "issn": ["2397-334X"],
+    "aliases": ["Nature Ecology & Evolution", "Nature Ecology and Evolution", "Nat. Ecol. Evol.", "Nat Ecol Evol"]
+  },
+  "national science review": {
+    "if": 20.6, "issn": ["2095-5138"],
+    "aliases": ["National Science Review", "Natl. Sci. Rev.", "Natl Sci Rev", "NSR"]
+  },
+  "science bulletin": {
+    "if": 18.9, "issn": ["2095-9273"],
+    "aliases": ["Science Bulletin", "Sci. Bull.", "Sci Bull"]
+  },
+  "cell": {
+    "if": 64.5, "issn": ["0092-8674"],
+    "aliases": ["Cell"]
+  },
+  "joule": {
+    "if": 39.2, "issn": ["2542-4351"],
+    "aliases": ["Joule"]
+  },
+  "one earth": {
+    "if": 16.2, "issn": ["2590-3322"],
+    "aliases": ["One Earth", "One Earth"]
+  },
+  "scientific data": {
+    "if": 9.8, "issn": ["2052-4463"],
+    "aliases": ["Scientific Data", "Sci. Data", "Sci Data"]
+  },
+  "patterns": {
+    "if": 6.5, "issn": ["2666-3899"],
+    "aliases": ["Patterns"]
+  },
+  "research": {
+    "if": 8.5, "issn": ["2096-5168"],
+    "aliases": ["Research"]
+  },
+  "innovation": {
+    "if": 10.0, "issn": ["2666-6758"],
+    "aliases": ["The Innovation", "Innovation"]
+  },
+  "fundamental research": {
+    "if": 5.2, "issn": ["2667-3258"],
+    "aliases": ["Fundamental Research", "Fundam. Res."]
+  },
+  "science china earth sciences": {
+    "if": 5.4, "issn": ["1674-7313"],
+    "aliases": ["Science China Earth Sciences", "Sci. China Earth Sci.", "Sci China Earth Sci"]
+  },
+  "science china information sciences": {
+    "if": 5.5, "issn": ["1674-733X"],
+    "aliases": ["Science China Information Sciences", "Sci. China Inf. Sci.", "Sci China Inf Sci"]
+  },
+
+  "ieee transactions on pattern analysis and machine intelligence": {
+    "if": 23.6, "issn": ["0162-8828"],
+    "aliases": ["IEEE Transactions on Pattern Analysis and Machine Intelligence", "IEEE Trans. Pattern Anal. Mach. Intell.", "IEEE Trans Pattern Anal Mach Intell", "TPAMI", "IEEE T PATTERN ANAL"]
+  },
+  "ieee transactions on image processing": {
+    "if": 10.6, "issn": ["1057-7149"],
+    "aliases": ["IEEE Transactions on Image Processing", "IEEE Trans. Image Process.", "IEEE Trans Image Process", "TIP"]
+  },
+  "ieee transactions on neural networks and learning systems": {
+    "if": 10.4, "issn": ["2162-237X"],
+    "aliases": ["IEEE Transactions on Neural Networks and Learning Systems", "IEEE Trans. Neural Netw. Learn. Syst.", "IEEE Trans Neural Netw Learn Syst", "TNNLS"]
+  },
+  "ieee transactions on cybernetics": {
+    "if": 9.9, "issn": ["2168-2267"],
+    "aliases": ["IEEE Transactions on Cybernetics", "IEEE Trans. Cybern.", "IEEE Trans Cybern"]
+  },
+  "artificial intelligence": {
+    "if": 14.4, "issn": ["0004-3702"],
+    "aliases": ["Artificial Intelligence", "Artif. Intell.", "Artif Intell", "AI Journal"]
+  },
+  "international journal of computer vision": {
+    "if": 19.5, "issn": ["0920-5691"],
+    "aliases": ["International Journal of Computer Vision", "Int. J. Comput. Vis.", "Int J Comput Vis", "IJCV"]
+  },
+  "pattern recognition": {
+    "if": 8.4, "issn": ["0031-3203"],
+    "aliases": ["Pattern Recognition", "Pattern Recognit.", "Pattern Recognit", "PR"]
+  },
+  "knowledge-based systems": {
+    "if": 8.8, "issn": ["0950-7051"],
+    "aliases": ["Knowledge-Based Systems", "Knowl.-Based Syst.", "Knowl Based Syst", "KBS"]
+  },
+  "expert systems with applications": {
+    "if": 8.5, "issn": ["0957-4174"],
+    "aliases": ["Expert Systems with Applications", "Expert Syst. Appl.", "Expert Syst Appl", "ESWA"]
+  },
+  "information fusion": {
+    "if": 18.6, "issn": ["1566-2535"],
+    "aliases": ["Information Fusion", "Inf. Fusion", "Inf Fusion"]
+  },
+  "neural networks": {
+    "if": 7.6, "issn": ["0893-6080"],
+    "aliases": ["Neural Networks", "Neural Netw.", "Neural Netw"]
+  },
+  "isprs international journal of geo-information": {
+    "if": 5.4, "issn": ["2220-9964"],
+    "aliases": ["ISPRS International Journal of Geo-Information", "ISPRS Int. J. Geo-Inf.", "ISPRS Int J Geo Inf", "IJGI"]
+  },
+  "international journal of geographical information science": {
+    "if": 5.7, "issn": ["1365-8816"],
+    "aliases": ["International Journal of Geographical Information Science", "Int. J. Geogr. Inf. Sci.", "Int J Geogr Inf Sci", "IJGIS"]
+  },
+  "computers environment and urban systems": {
+    "if": 6.5, "issn": ["0198-9715"],
+    "aliases": ["Computers Environment and Urban Systems", "Comput. Environ. Urban Syst.", "Comput Environ Urban Syst", "CEUS"]
+  },
+  "landscape and urban planning": {
+    "if": 8.1, "issn": ["0169-2046"],
+    "aliases": ["Landscape and Urban Planning", "Landsc. Urban Plan.", "Landsc Urban Plan", "LUP"]
+  },
+  "land use policy": {
+    "if": 6.4, "issn": ["0264-8377"],
+    "aliases": ["Land Use Policy", "Land Use Policy"]
+  },
+  "urban forestry & urban greening": {
+    "if": 6.0, "issn": ["1618-8667"],
+    "aliases": ["Urban Forestry & Urban Greening", "Urban For. Urban Green.", "Urban For Urban Green", "UFUG"]
+  },
+  "sustainable cities and society": {
+    "if": 9.7, "issn": ["2210-6707"],
+    "aliases": ["Sustainable Cities and Society", "Sustain. Cities Soc.", "Sustain Cities Soc", "SCS"]
+  },
+
+  "applied energy": {
+    "if": 11.2, "issn": ["0306-2619"],
+    "aliases": ["Applied Energy", "Appl. Energy", "Appl Energy"]
+  },
+  "renewable and sustainable energy reviews": {
+    "if": 15.9, "issn": ["1364-0321"],
+    "aliases": ["Renewable and Sustainable Energy Reviews", "Renew. Sustain. Energy Rev.", "Renew Sustain Energy Rev", "RSER"]
+  },
+  "energy conversion and management": {
+    "if": 10.4, "issn": ["0196-8904"],
+    "aliases": ["Energy Conversion and Management", "Energy Convers. Manag.", "Energy Convers Manag", "ECM"]
+  },
+  "renewable energy": {
+    "if": 8.7, "issn": ["0960-1481"],
+    "aliases": ["Renewable Energy", "Renew. Energy", "Renew Energy"]
+  },
+  "energy": {
+    "if": 9.0, "issn": ["0360-5442"],
+    "aliases": ["Energy"]
+  },
+
+  "lancet planetary health": {
+    "if": 25.7, "issn": ["2542-5196"],
+    "aliases": ["The Lancet Planetary Health", "Lancet Planet. Health", "Lancet Planet Health"]
+  },
+  "current opinion in environmental sustainability": {
+    "if": 7.8, "issn": ["1877-3435"],
+    "aliases": ["Current Opinion in Environmental Sustainability", "Curr. Opin. Environ. Sustain.", "Curr Opin Environ Sustain", "COSUST"]
+  },
+  "wiley interdisciplinary reviews climate change": {
+    "if": 8.3, "issn": ["1757-7780"],
+    "aliases": ["Wiley Interdisciplinary Reviews: Climate Change", "WIREs Climate Change", "WIREs Clim Change"]
+  },
+  "global sustainability": {
+    "if": 5.5, "issn": ["2059-4798"],
+    "aliases": ["Global Sustainability", "Glob. Sustain.", "Glob Sustain"]
+  },
+
+  "remote sensing applications society and environment": {
+    "if": 5.0, "issn": ["2352-9385"],
+    "aliases": ["Remote Sensing Applications: Society and Environment", "Remote Sens. Appl. Soc. Environ.", "Remote Sens Appl Soc Environ", "RSASE"]
+  },
+  "big earth data": {
+    "if": 6.2, "issn": ["2096-4471"],
+    "aliases": ["Big Earth Data", "Big Earth Data"]
+  },
+  "frontiers in ecology and the environment": {
+    "if": 8.5, "issn": ["1540-9295"],
+    "aliases": ["Frontiers in Ecology and the Environment", "Front. Ecol. Environ.", "Front Ecol Environ"]
+  },
+  "methods in ecology and evolution": {
+    "if": 5.4, "issn": ["2041-210X"],
+    "aliases": ["Methods in Ecology and Evolution", "Methods Ecol. Evol.", "Methods Ecol Evol", "MEE"]
+  },
+  "ecological applications": {
+    "if": 5.2, "issn": ["1051-0761"],
+    "aliases": ["Ecological Applications", "Ecol. Appl.", "Ecol Appl"]
+  },
+  "ecological monographs": {
+    "if": 5.1, "issn": ["0012-9615"],
+    "aliases": ["Ecological Monographs", "Ecol. Monogr.", "Ecol Monogr"]
+  },
+  "ecology": {
+    "if": 5.2, "issn": ["0012-9658"],
+    "aliases": ["Ecology", "Ecology"]
+  },
+  "ecology letters": {
+    "if": 8.9, "issn": ["1461-023X"],
+    "aliases": ["Ecology Letters", "Ecol. Lett.", "Ecol Lett"]
+  },
+  "journal of ecology": {
+    "if": 5.9, "issn": ["0022-0477"],
+    "aliases": ["Journal of Ecology", "J. Ecol.", "J Ecol"]
+  },
+  "functional ecology": {
+    "if": 5.9, "issn": ["0269-8463"],
+    "aliases": ["Functional Ecology", "Funct. Ecol.", "Funct Ecol"]
+  }
+}

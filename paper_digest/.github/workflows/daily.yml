@@ -1,0 +1,59 @@
+# 农业遥感论文每日推送 - GitHub Actions 定时任务
+# 每天 UTC 00:00（北京时间 08:00）自动运行
+
+name: Daily Paper Digest
+
+on:
+  schedule:
+    # 每天 UTC 00:00 = 北京时间 08:00
+    - cron: '0 0 * * *'
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run daily digest
+        env:
+          # 可选：通过 GitHub Secrets 覆盖配置中的邮箱密码
+          # 如果在 config.yaml 中已配置 password，可跳过此步
+          EMAIL_PASSWORD_OVERRIDE: ${{ secrets.EMAIL_PASSWORD }}
+        run: |
+          # 如果设置了 GitHub Secret，用它覆盖 config.yaml 中的密码
+          if [ -n "$EMAIL_PASSWORD_OVERRIDE" ]; then
+            python -c "
+import yaml
+with open('config.yaml', 'r') as f:
+    c = yaml.safe_load(f)
+c['email']['password'] = '${{ secrets.EMAIL_PASSWORD }}'
+with open('config.yaml', 'w') as f:
+    yaml.dump(c, f, allow_unicode=True)
+"
+          fi
+          python main.py
+
+      - name: Commit sent papers update
+        # 运行后将 sent_papers.json 和 journals_if.json 的更新提交回仓库
+        if: success()
+        run: |
+          git config user.name "paper-digest-bot"
+          git config user.email "bot@paper-digest.local"
+          git add sent_papers.json journals_if.json logs/
+          git diff --cached --quiet || (
+            git commit -m "📝 Update sent papers & journal cache [$(date +%Y-%m-%d)]"
+            git push
+          )
